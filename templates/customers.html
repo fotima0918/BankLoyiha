@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Tizimi - Mijozlar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container animate-fade-in">
+    <div class="navbar glass-panel" style="padding: 1rem 2rem; margin-bottom: 2rem;">
+        <h1>Mijozlar Ro'yxati</h1>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/customers" class="active">Mijozlar</a>
+            <a href="/logout">Chiqish</a>
+        </div>
+    </div>
+
+    <div class="glass-panel">
+        <!-- Yangi mijoz qo'shish tugmasi -->
+        <div class="customers-header">
+            <h3 style="color: var(--text); font-weight: 600;">Barcha mijozlar</h3>
+            <button class="btn btn-add" id="btn-add-customer" onclick="openAddModal()">
+                <span class="btn-icon">+</span> Yangi mijoz qo'shish
+            </button>
+        </div>
+
+        <div class="table-container" style="max-height: 70vh; overflow-y: auto;">
+            <table id="customers-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Ism Familiya</th>
+                        <th>Jinsi</th>
+                        <th>Balans</th>
+                        <th>Amallar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loaded via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Mijoz qo'shish / tahrirlash modal -->
+<div class="modal-overlay" id="customer-modal">
+    <div class="modal glass-panel animate-fade-in">
+        <div class="modal-header">
+            <h2 id="modal-title">Yangi mijoz qo'shish</h2>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <form id="customer-form" onsubmit="submitCustomerForm(event)">
+            <input type="hidden" id="edit-customer-id" value="">
+            <div class="input-group">
+                <label for="input-fullname">Ism Familiya</label>
+                <input type="text" id="input-fullname" placeholder="Masalan: Alisher Karimov" required>
+            </div>
+            <div class="input-group">
+                <label for="input-gender">Jinsi</label>
+                <select id="input-gender" required>
+                    <option value="">Tanlang...</option>
+                    <option value="Erkak">Erkak</option>
+                    <option value="Ayol">Ayol</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="input-balance">Boshlang'ich balans ($)</label>
+                <input type="number" id="input-balance" placeholder="0" min="0" value="0" required>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Bekor qilish</button>
+                <button type="submit" class="btn" id="modal-submit-btn">Qo'shish</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- O'chirish tasdiqlash modal -->
+<div class="modal-overlay" id="delete-modal">
+    <div class="modal glass-panel animate-fade-in" style="max-width: 420px;">
+        <div class="modal-header">
+            <h2>Mijozni o'chirish</h2>
+            <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+        </div>
+        <p class="delete-message">
+            <span class="delete-icon">⚠️</span>
+            <strong id="delete-customer-name"></strong> mijozini rostdan ham o'chirmoqchimisiz?
+        </p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeDeleteModal()">Bekor qilish</button>
+            <button class="btn btn-danger" id="btn-confirm-delete" onclick="confirmDelete()">O'chirish</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script>
+    // Initialize Customers data
+    document.addEventListener("DOMContentLoaded", () => {
+        loadCustomersTable();
+    });
+</script>
+
+</body>
+</html>

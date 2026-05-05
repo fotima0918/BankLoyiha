@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Tizimi - Kirish</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="login-wrapper">
+    <div class="glass-panel login-box animate-fade-in">
+        <h2>Bank Tizimi</h2>
+        
+        <div class="input-group">
+            <label for="user">Login</label>
+            <input type="text" id="user" placeholder="Loginni kiriting" autocomplete="off">
+        </div>
+        
+        <div class="input-group">
+            <label for="pass">Parol</label>
+            <input type="password" id="pass" placeholder="Parolni kiriting">
+        </div>
+        
+        <button class="btn" onclick="login()">Kirish</button>
+        <div id="error-msg" class="error-message">Login yoki parol xato</div>
+    </div>
+</div>
+
+<script>
+async function login() {
+    const user = document.getElementById("user").value;
+    const pass = document.getElementById("pass").value;
+    const errorMsg = document.getElementById("error-msg");
+    const btn = document.querySelector(".btn");
+
+    if (!user || !pass) {
+        errorMsg.textContent = "Iltimos, barcha maydonlarni to'ldiring";
+        errorMsg.style.display = "block";
+        return;
+    }
+
+    btn.textContent = "Kirilmoqda...";
+    btn.disabled = true;
+
+    try {
+        const response = await fetch("/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username: user, password: pass })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            window.location.href = "/dashboard";
+        } else {
+            errorMsg.textContent = data.message;
+            errorMsg.style.display = "block";
+            btn.textContent = "Kirish";
+            btn.disabled = false;
+        }
+    } catch (error) {
+        errorMsg.textContent = "Tizim xatosi yuz berdi";
+        errorMsg.style.display = "block";
+        btn.textContent = "Kirish";
+        btn.disabled = false;
+    }
+}
+</script>
+
+</body>
+</html>
